@@ -6,7 +6,21 @@ export type RegistrationType =
 
 export type RequestStatus = 'pending' | 'approved' | 'rejected' | 'cancelled' | 'expired';
 
-export type UserRole = 'admin' | 'manager' | 'security' | 'employee' | 'receptionist';
+export type UserRole = 'admin' | 'manager' | 'security' | 'employee' | 'receptionist' | 'hr_staff';
+
+export type Permission = 
+  | 'view_dashboard' | 'manage_registrations' | 'approve_requests' | 'view_reports' 
+  | 'manage_users' | 'manage_workflows' | 'view_history' | 'manage_settings'
+  | 'manage_visitors' | 'manage_contractors' | 'manage_assets' | 'manage_vehicles';
+
+export interface PermissionGroup {
+  id: string;
+  name: string;
+  description: string;
+  permissions: Permission[];
+  createdAt: string;
+  updatedAt: string;
+}
 
 export interface User {
   id: string;
@@ -16,6 +30,10 @@ export interface User {
   role: UserRole;
   avatar?: string;
   employeeId: string;
+  permissionGroupIds: string[];
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface Department {
