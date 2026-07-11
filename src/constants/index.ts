@@ -37,6 +37,15 @@ export const NAV_ITEMS = [
   { labelKey: 'myRequests', href: '/my-requests', icon: 'FileText' },
   { labelKey: 'history', href: '/history', icon: 'History' },
   { labelKey: 'reports', href: '/reports', icon: 'BarChart3' },
-  { labelKey: 'admin', href: '/admin', icon: 'Settings2' },
+  {
+    labelKey: 'administration',
+    href: '/administration',
+    icon: 'Shield',
+    children: [
+      { type: 'users', labelKey: 'users', icon: 'Users', route: '/administration/users' },
+      { type: 'roles', labelKey: 'roles', icon: 'Settings2', route: '/administration/roles' },
+      { type: 'delegations', labelKey: 'delegations', icon: 'Clock', route: '/administration/delegations' },
+    ],
+  },
   { labelKey: 'settings', href: '/settings', icon: 'Settings' },
 ];

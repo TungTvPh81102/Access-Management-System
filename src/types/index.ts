@@ -6,41 +6,79 @@ export type RegistrationType =
 
 export type RequestStatus = 'pending' | 'approved' | 'rejected' | 'cancelled' | 'expired';
 
+// Backward compatibility: old role types (deprecated, use Role entity instead)
 export type UserRole = 'admin' | 'manager' | 'security' | 'employee' | 'receptionist' | 'hr_staff';
 
-export type Permission = 
-  | 'view_dashboard' | 'manage_registrations' | 'approve_requests' | 'view_reports' 
-  | 'manage_users' | 'manage_workflows' | 'view_history' | 'manage_settings'
-  | 'manage_visitors' | 'manage_contractors' | 'manage_assets' | 'manage_vehicles';
+// ========== PERMISSION SYSTEM TYPES ==========
 
-export interface PermissionGroup {
+// Module (chức năng chính: Visitor, Asset, Overtime, Vehicle...)
+export interface Module {
   id: string;
+  code: string;        // "VISITOR", "ASSET", "OVERTIME", "VEHICLE"
   name: string;
+  description?: string;
+  actions: ModuleAction[];
+}
+
+export type ModuleAction = 'read' | 'create' | 'update' | 'delete' | 'approve' | 'export';
+
+// Permission (Module:Action:Scope)
+export interface Permission {
+  id: string;
+  code: string;         // "VISITOR:approve", "ASSET:create"
+  moduleCode: string;
+  action: ModuleAction;
+  scope: 'all' | 'department' | 'own';
   description: string;
-  permissions: Permission[];
-  createdAt: string;
-  updatedAt: string;
 }
 
-export interface User {
+// Role (tập hợp permissions, không chứa scope - scope qua User)
+export interface Role {
   id: string;
-  name: string;
-  email: string;
-  department: string;
-  role: UserRole;
-  avatar?: string;
-  employeeId: string;
-  permissionGroupIds: string[];
-  isActive: boolean;
+  name: string;              // "Department Approver", "Asset Manager", "Super Admin"
+  description: string;
+  permissionIds: string[];   // IDs của permissions
+  isSystemRole: boolean;     // true = không cho xóa/sửa
   createdAt: string;
   updatedAt: string;
 }
 
+// Department (hỗ trợ cây phòng ban)
 export interface Department {
   id: string;
-  name: string;
   code: string;
-  managerId?: string;
+  name: string;
+  parentId: string | null;   // null nếu là root
+  level: number;             // depth trong tree
+  childrenCount?: number;
+}
+
+// Approval Delegation (ủy quyền duyệt)
+export interface ApprovalDelegate {
+  id: string;
+  fromUserId: string;
+  toUserId: string;
+  startDate: string;
+  endDate: string;
+  moduleScopes?: string[];   // ["VISITOR", "ASSET"] or undefined (tất cả)
+  reason: string;
+  isActive?: boolean;
+}
+
+// User (core - định nghĩa quyền truy cập)
+export interface User {
+  id: string;
+  employeeId: string;
+  name: string;
+  email: string;
+  avatar?: string;
+  status: 'active' | 'inactive' | 'locked';
+  departmentId: string;              // phòng ban CHÍNH user thuộc về
+  roleIds: string[];                 // nhiều role, tính union quyền
+  scopeDepartmentIds: string[];      // phòng ban user được PHÉP TÁC ĐỘNG (riêng biệt khỏi departmentId)
+  lastLogin?: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface Company {

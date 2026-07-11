@@ -91,12 +91,14 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                           {item.children.map((subItem) => {
                             const SubIcon = ICONS[subItem.icon];
                             const isSubActive = pathname === subItem.route;
+                            // Use 'registration' namespace for registration types, 'administration' for admin items
+                            const namespace = item.labelKey === 'registration' ? 'registration' : 'administration';
                             return (
                               <SidebarMenuSubItem key={subItem.type}>
                                 <SidebarMenuSubButton asChild isActive={isSubActive}>
                                   <Link href={subItem.route}>
-                                    {SubIcon && <SubIcon />}
-                                    <span>{t('registration', subItem.labelKey)}</span>
+                                    {SubIcon && <SubIcon className="h-4 w-4" />}
+                                    <span>{t(namespace, subItem.labelKey)}</span>
                                   </Link>
                                 </SidebarMenuSubButton>
                               </SidebarMenuSubItem>
