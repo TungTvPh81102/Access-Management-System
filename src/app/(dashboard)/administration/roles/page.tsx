@@ -2,9 +2,10 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { Plus, Users } from 'lucide-react';
+import { Plus, Users, Shield, Lock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   Dialog,
   DialogContent,
@@ -31,122 +32,136 @@ export default function RolesPage() {
   const [showPermissionDialog, setShowPermissionDialog] = useState(false);
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold">Roles</h1>
-          <p className="text-muted-foreground">Manage system roles and permissions</p>
+          <h1 className="text-3xl font-bold tracking-tight">Role Management</h1>
+          <p className="text-sm text-muted-foreground mt-1">Define and manage system roles with permissions</p>
         </div>
-        <Button className="gap-2" disabled>
+        <Button className="gap-2 h-10 px-4" disabled>
           <Plus className="h-4 w-4" />
           New Role (Coming Soon)
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         {/* Roles List */}
-        <div className="lg:col-span-1">
-          <div className="border rounded-lg p-4 space-y-2">
-            <h2 className="font-semibold mb-4">System Roles</h2>
+        <Card className="lg:col-span-1">
+          <CardHeader>
+            <CardTitle className="text-base">System Roles</CardTitle>
+            <CardDescription>{SYSTEM_ROLES.length} predefined roles</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-2">
             {SYSTEM_ROLES.map((role) => {
               const userCount = MOCK_ROLE_USER_COUNTS[role.id] || 0;
               const isSelected = selectedRole?.id === role.id;
 
               return (
-                <div
+                <button
                   key={role.id}
                   onClick={() => setSelectedRole(role)}
-                  className={`p-3 rounded-lg cursor-pointer border transition-colors ${
+                  className={`w-full text-left p-3 rounded-lg border-2 transition-all ${
                     isSelected
-                      ? 'border-primary bg-primary/10'
-                      : 'border-transparent hover:bg-muted'
+                      ? 'border-primary bg-primary/5 dark:bg-primary/10'
+                      : 'border-muted hover:border-primary/50 hover:bg-muted/50'
                   }`}
                 >
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <p className="font-medium text-sm">{role.name}</p>
-                      <p className="text-xs text-muted-foreground">{role.description}</p>
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="flex-1 min-w-0">
+                      <p className="font-semibold text-sm">{role.name}</p>
+                      <p className="text-xs text-muted-foreground line-clamp-2">{role.description}</p>
                     </div>
                     {role.isSystemRole && (
-                      <Badge variant="secondary" className="text-xs ml-2">
-                        System
-                      </Badge>
+                      <Lock className="h-3 w-3 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
                     )}
                   </div>
                   <div className="flex items-center gap-2 mt-2 text-xs text-muted-foreground">
                     <Users className="h-3 w-3" />
-                    {userCount} users
+                    {userCount} user{userCount !== 1 ? 's' : ''}
                   </div>
-                </div>
+                </button>
               );
             })}
-          </div>
-        </div>
+          </CardContent>
+        </Card>
 
         {/* Role Details */}
-        <div className="lg:col-span-2 space-y-4">
+        <div className="lg:col-span-2 space-y-6">
           {selectedRole && (
             <>
               {/* Role Info Card */}
-              <div className="border rounded-lg p-6 space-y-4">
-                <div>
-                  <div className="flex items-center gap-2 mb-2">
-                    <h2 className="text-2xl font-bold">{selectedRole.name}</h2>
+              <Card>
+                <CardHeader>
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <div className="flex items-center gap-2 mb-2">
+                        <Shield className="h-5 w-5 text-primary" />
+                        <h2 className="text-2xl font-bold">{selectedRole.name}</h2>
+                      </div>
+                      <p className="text-muted-foreground">{selectedRole.description}</p>
+                    </div>
                     {selectedRole.isSystemRole && (
-                      <Badge variant="secondary">System Role</Badge>
+                      <Badge variant="outline" className="bg-amber-50 text-amber-900 border-amber-200 dark:bg-amber-950 dark:text-amber-400 dark:border-amber-800">
+                        <Lock className="h-3 w-3 mr-1" />
+                        System Role
+                      </Badge>
                     )}
                   </div>
-                  <p className="text-muted-foreground">{selectedRole.description}</p>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4 pt-4 border-t">
-                  <div>
-                    <p className="text-sm font-medium mb-1">Permissions</p>
-                    <p className="text-2xl font-bold">{selectedRole.permissionIds.length}</p>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="bg-gradient-to-br from-blue-50 to-blue-100/50 dark:from-blue-950 dark:to-blue-900/50 rounded-lg p-4 border border-blue-200 dark:border-blue-800">
+                      <p className="text-sm text-muted-foreground font-medium">Total Permissions</p>
+                      <p className="text-3xl font-bold mt-2">{selectedRole.permissionIds.length}</p>
+                    </div>
+                    <div className="bg-gradient-to-br from-purple-50 to-purple-100/50 dark:from-purple-950 dark:to-purple-900/50 rounded-lg p-4 border border-purple-200 dark:border-purple-800">
+                      <p className="text-sm text-muted-foreground font-medium">Assigned Users</p>
+                      <p className="text-3xl font-bold mt-2">{MOCK_ROLE_USER_COUNTS[selectedRole.id] || 0}</p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-sm font-medium mb-1">Assigned Users</p>
-                    <p className="text-2xl font-bold">
-                      {MOCK_ROLE_USER_COUNTS[selectedRole.id] || 0}
-                    </p>
-                  </div>
-                </div>
 
-                {selectedRole.isSystemRole && (
-                  <div className="p-3 bg-amber-50 border border-amber-200 rounded-md">
-                    <p className="text-sm text-amber-900">
-                      ⚠️ This is a system role and cannot be modified. It includes all permissions necessary for its function.
-                    </p>
-                  </div>
-                )}
+                  {selectedRole.isSystemRole && (
+                    <div className="p-4 bg-amber-50/50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-lg">
+                      <p className="text-sm text-amber-900 dark:text-amber-400">
+                        This is a system role and cannot be modified. It includes all permissions necessary for its function.
+                      </p>
+                    </div>
+                  )}
 
-                <Button
-                  onClick={() => setShowPermissionDialog(true)}
-                  variant={selectedRole.isSystemRole ? 'outline' : 'default'}
-                  disabled={selectedRole.isSystemRole}
-                >
-                  View Permission Matrix
-                </Button>
-              </div>
+                  <Button
+                    onClick={() => setShowPermissionDialog(true)}
+                    variant={selectedRole.isSystemRole ? 'outline' : 'default'}
+                    disabled={selectedRole.isSystemRole}
+                    className="w-full"
+                  >
+                    View Permission Matrix
+                  </Button>
+                </CardContent>
+              </Card>
 
               {/* Permissions Summary */}
-              <div className="border rounded-lg p-4 space-y-3">
-                <h3 className="font-semibold">Permission Summary</h3>
-                <div className="grid grid-cols-2 gap-2 text-sm">
-                  {['read', 'create', 'update', 'delete', 'approve', 'export'].map((action) => {
-                    const count = selectedRole.permissionIds.filter((id) => id.includes(`:${action}:`)).length;
-                    return (
-                      <div key={action} className="flex justify-between items-center">
-                        <span className="capitalize text-muted-foreground">{action}</span>
-                        <Badge variant={count > 0 ? 'default' : 'outline'}>
-                          {count}
-                        </Badge>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-base">Permission Summary by Action</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                    {['read', 'create', 'update', 'delete', 'approve', 'export'].map((action) => {
+                      const count = selectedRole.permissionIds.filter((id) => id.includes(`:${action}:`)).length;
+                      return (
+                        <div key={action} className="bg-muted/50 rounded-lg p-3">
+                          <p className="text-xs font-medium text-muted-foreground capitalize mb-2">{action}</p>
+                          <div className="flex items-center justify-between">
+                            <p className="text-2xl font-bold">{count}</p>
+                            {count > 0 && <Badge className="text-xs">Active</Badge>}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </CardContent>
+              </Card>
             </>
           )}
         </div>
