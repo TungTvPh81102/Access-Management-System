@@ -35,8 +35,13 @@ export const translations: Record<Locale, Record<string, Record<string, string>>
       myRequests: 'My Requests',
       history: 'History',
       reports: 'Reports',
-      admin: 'Administration',
+      administration: 'Administration',
       settings: 'Settings',
+    },
+    administration: {
+      users: 'Users',
+      roles: 'Roles',
+      delegations: 'Delegations',
     },
     registration: {
       visitor: 'Visitor',
@@ -100,8 +105,13 @@ export const translations: Record<Locale, Record<string, Record<string, string>>
       myRequests: 'Yêu cầu của tôi',
       history: 'Lịch sử',
       reports: 'Báo cáo',
-      admin: 'Quản trị',
+      administration: 'Quản trị',
       settings: 'Cài đặt',
+    },
+    administration: {
+      users: 'Người dùng',
+      roles: 'Vai trò',
+      delegations: 'Ủy quyền',
     },
     registration: {
       visitor: 'Khách thăm',
@@ -165,8 +175,13 @@ export const translations: Record<Locale, Record<string, Record<string, string>>
       myRequests: '我的申请',
       history: '历史记录',
       reports: '报表',
-      admin: '管理',
+      administration: '管理',
       settings: '设置',
+    },
+    administration: {
+      users: '用户',
+      roles: '角色',
+      delegations: '授权',
     },
     registration: {
       visitor: '訪客',

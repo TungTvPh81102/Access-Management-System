@@ -6,13 +6,13 @@ import {
   LayoutDashboard, ClipboardList, CheckSquare, FileText, 
   History, BarChart3, Settings2, Settings, Shield,
   UserCheck, HardHat, PackagePlus, PackageMinus, Truck,
-  HandCoins, Clock, CalendarClock, Car, Camera, ShieldAlert,
-  Timer, FileCheck
+  HandCoins, Clock, CalendarClock, Car, Camera, AlertTriangle,
+  Timer, FileCheck, Users
 } from 'lucide-react';
 
 import { useI18n } from '@/hooks/use-i18n';
 import { useUserStore } from '@/stores/user-store';
-import { NAV_ITEMS, REGISTRATION_TYPES } from '@/constants';
+import { NAV_ITEMS } from '@/constants';
 import {
   Sidebar,
   SidebarContent,
@@ -34,8 +34,8 @@ const ICONS: Record<string, React.ElementType> = {
   LayoutDashboard, ClipboardList, CheckSquare, FileText, 
   History, BarChart3, Settings2, Settings,
   UserCheck, HardHat, PackagePlus, PackageMinus, Truck,
-  HandCoins, Clock, CalendarClock, Car, Camera, ShieldAlert,
-  Timer, FileCheck
+  HandCoins, Clock, CalendarClock, Car, Camera, AlertTriangle,
+  Timer, FileCheck, Users
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
@@ -91,12 +91,14 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                           {item.children.map((subItem) => {
                             const SubIcon = ICONS[subItem.icon];
                             const isSubActive = pathname === subItem.route;
+                            // Use 'registration' namespace for registration types, 'administration' for admin items
+                            const namespace = item.labelKey === 'registration' ? 'registration' : 'administration';
                             return (
                               <SidebarMenuSubItem key={subItem.type}>
                                 <SidebarMenuSubButton asChild isActive={isSubActive}>
                                   <Link href={subItem.route}>
-                                    {SubIcon && <SubIcon />}
-                                    <span>{t('registration', subItem.labelKey)}</span>
+                                    {SubIcon && <SubIcon className="h-4 w-4" />}
+                                    <span>{t(namespace, subItem.labelKey)}</span>
                                   </Link>
                                 </SidebarMenuSubButton>
                               </SidebarMenuSubItem>
@@ -111,9 +113,14 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
               return (
                 <SidebarMenuItem key={item.labelKey}>
-                  <SidebarMenuButton asChild isActive={isActive} tooltip={t('nav', item.labelKey)}>
-                    <Link href={item.href}>
-                      {Icon && <Icon />}
+                  <SidebarMenuButton 
+                    asChild 
+                    isActive={isActive} 
+                    tooltip={t('nav', item.labelKey)}
+                    className="cursor-pointer"
+                  >
+                    <Link href={item.href} className="flex items-center gap-2">
+                      {Icon && <Icon className="h-4 w-4 flex-shrink-0" />}
                       <span>{t('nav', item.labelKey)}</span>
                       {item.labelKey === 'approvalCenter' && (
                         <Badge variant="destructive" className="ml-auto rounded-full px-1.5 py-0 text-[10px]">
